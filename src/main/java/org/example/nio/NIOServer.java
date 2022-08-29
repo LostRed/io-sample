@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
+import java.util.Iterator;
 import java.util.Set;
 
 public class NIOServer {
@@ -21,15 +22,16 @@ public class NIOServer {
             while (true) {
                 selector.select();
                 Set<SelectionKey> selectionKeys = selector.selectedKeys();
-                for (SelectionKey key : selectionKeys) {
+                Iterator<SelectionKey> iterator = selectionKeys.iterator();
+                while (iterator.hasNext()) {
+                    SelectionKey key = iterator.next();
                     //新连接
                     if (key.isAcceptable()) {
-                        try (ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel()) {
-                            SocketChannel clientChannel = serverChannel.accept();
-                            clientChannel.configureBlocking(false);
-                            clientChannel.register(selector, SelectionKey.OP_READ);
-                            System.out.println("客户端建立连接");
-                        }
+                        ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
+                        SocketChannel clientChannel = serverChannel.accept();
+                        clientChannel.configureBlocking(false);
+                        clientChannel.register(selector, SelectionKey.OP_READ);
+                        System.out.println("客户端建立连接");
                     }
                     //连接有可读数据
                     else if (key.isReadable()) {
@@ -43,6 +45,7 @@ public class NIOServer {
                             System.out.println("客户端断开连接");
                         }
                     }
+                    iterator.remove();
                 }
             }
         } catch (IOException e) {
