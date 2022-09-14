@@ -14,7 +14,7 @@ public class NettyServer {
     private final int port = 8083;
 
     public void receiving() {
-        //创建两个线程组 boosGroup、workerGroup
+        //创建两个线程组 bossGroup、workerGroup
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
