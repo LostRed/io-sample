@@ -12,7 +12,7 @@ public class AIOServer {
 
     public void receiving() {
         try {
-            this.serverSocketChannel= AsynchronousServerSocketChannel.open();
+            this.serverSocketChannel = AsynchronousServerSocketChannel.open();
             serverSocketChannel.bind(new InetSocketAddress(port));
             serverSocketChannel.accept(this, new AcceptableHandler());
             latch.await();
